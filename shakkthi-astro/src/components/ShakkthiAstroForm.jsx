@@ -367,6 +367,10 @@ const nm = (form.name.trim() || 'Jathagam').replace(/\s+/g, '_');
       setBusy((b) => ({ ...b, wa: false }));
     }
   };
+  const getDOB = () => {
+  if (!form.dobDate && !form.dobTime) return '';
+  return `${form.dobDate || ''} ${form.dobTime || ''}`;
+};
 
   /* ══════════════════════════════════════════════
      JSX
@@ -531,29 +535,64 @@ const nm = (form.name.trim() || 'Jathagam').replace(/\s+/g, '_');
 
           {/* ── PERSONAL DETAILS ── */}
           <table style={S.table}>
-            <tbody>
-              {[
-                { fid: 'name', ta: 'பெயர்', en: 'Name' },
-                { fid: 'dob', ta: 'பிறந்த தேதி – நேரம்', en: 'Date & Time of Birth', im: 'numeric', ph: 'dd/mm/yyyy  hh:mm' },
-                { fid: 'pob', ta: 'பிறந்த இடம்', en: 'Place of Birth' },
-                { fid: 'rasi', ta: 'ராசி', en: 'Rasi' },
-                { fid: 'star', ta: 'நட்சத்திரம் & பாதம்', en: 'Star & Padam' },
-                { fid: 'lagnam', ta: 'லக்னம்', en: 'Ascendant' },
-                { fid: 'dasa', ta: 'நடப்பு தசா', en: 'Current Dasa' },
-              ].map(({ fid, ta, en, im, ph, ac }) => (
-                <tr key={fid}>
-                  <td style={S.lbl}>
-                    {ta}
-                    <small style={{ display: 'block', fontWeight: 400, color: '#94a3b8', fontSize: 'clamp(9px,1.9vw,10.5px)', marginTop: 1 }}>
-                      {en}
-                    </small>
-                  </td>
-                  <td style={S.val}>
-                    <FInput fid={fid} val={form[fid]} onChange={set} im={im} ph={ph} ac={ac} />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
+          <tbody>
+  {[
+    { fid: 'name', ta: 'பெயர்', en: 'Name' },
+    { fid: 'dob', ta: 'பிறந்த தேதி – நேரம்', en: 'Date & Time of Birth' },
+    { fid: 'pob', ta: 'பிறந்த இடம்', en: 'Place of Birth' },
+    { fid: 'rasi', ta: 'ராசி', en: 'Rasi' },
+    { fid: 'star', ta: 'நட்சத்திரம் & பாதம்', en: 'Star & Padam' },
+    { fid: 'lagnam', ta: 'லக்னம்', en: 'Ascendant' },
+    { fid: 'dasa', ta: 'நடப்பு தசா', en: 'Current Dasa' },
+  ].map(({ fid, ta, en }) => (
+    <tr key={fid}>
+      <td style={S.lbl}>
+        {ta}
+        <small style={{
+          display: 'block',
+          fontWeight: 400,
+          color: '#94a3b8',
+          fontSize: 'clamp(9px,1.9vw,10.5px)',
+          marginTop: 1
+        }}>
+          {en}
+        </small>
+      </td>
+
+      <td style={S.val}>
+        {fid === 'dob' ? (
+          <div style={{ display: 'flex', gap: '6px' }}>
+            {/* DATE */}
+            <input
+              type="date"
+              value={form.dobDate || ''}
+              onChange={(e) => set('dobDate', e.target.value)}
+              style={{
+                flex: 1,
+                fontSize: '12px',
+                padding: '4px'
+              }}
+            />
+
+            {/* TIME */}
+            <input
+              type="time"
+              value={form.dobTime || ''}
+              onChange={(e) => set('dobTime', e.target.value)}
+              style={{
+                flex: 1,
+                fontSize: '12px',
+                padding: '4px'
+              }}
+            />
+          </div>
+        ) : (
+          <FInput fid={fid} val={form[fid]} onChange={set} />
+        )}
+      </td>
+    </tr>
+  ))}
+</tbody>
           </table>
 
           {/* ── COLOURS ── */}
@@ -775,7 +814,7 @@ const nm = (form.name.trim() || 'Jathagam').replace(/\s+/g, '_');
             {/* Personal rows */}
             {[
               ['பெயர் – Name', form.name],
-              ['பிறந்த தேதி – நேரம் / Date & Time of Birth', form.dob],
+              ['பிறந்த தேதி – நேரம் / Date & Time of Birth', getDOB()],
               ['பிறந்த இடம் / Place of Birth', form.pob],
               ['ராசி – Rasi', form.rasi],
               ['நட்சத்திரம் & பாதம் / Star & Padam', form.star],
