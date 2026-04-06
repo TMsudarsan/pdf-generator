@@ -1,0 +1,242 @@
+/* ═══════════════════════════════════════════
+   GLOBAL
+═══════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;600;700&display=swap');
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Noto Sans Tamil', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+input,
+textarea,
+button,
+select {
+  font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+input {
+  border: none;
+  background: transparent;
+}
+
+textarea {
+  border: none;
+  background: transparent;
+  resize: none;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  background: #eff6ff !important;
+}
+
+/* ═══════════════════════════════════════════
+   HIDDEN PDF LAYER
+   Always 210 mm wide, rendered off-screen.
+   html2pdf reads it via DOM — NOT via React
+   virtual DOM — so styles MUST live here in
+   a real stylesheet, not Tailwind utilities.
+═══════════════════════════════════════════ */
+#pdf-layer {
+  position: fixed;
+  top: 0;
+  left: -9999px; /* keep offscreen */
+  width: 210mm;
+  min-height: 297mm;
+  background: #ffffff;
+  padding: 10mm 9mm;
+  box-sizing: border-box;
+
+  visibility: hidden;   /* 🔥 IMPORTANT */
+  opacity: 1;           /* 🔥 keep visible for canvas */
+}
+
+#pdf-layer * {
+  box-sizing: border-box;
+  font-family: 'Noto Sans Tamil', sans-serif;
+}
+
+#pdf-layer table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#pdf-layer td,
+#pdf-layer th {
+  border: 1.5px solid #1a3a6e;
+  padding: 3px 6px;
+  font-size: 9px;
+  vertical-align: middle;
+}
+
+/* PDF Header block */
+#pdf-layer .p-hdr {
+  text-align: center;
+  border: 2px solid #1a3a6e;
+  padding: 6px 5px 5px;
+}
+#pdf-layer .p-hdr-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a3a6e;
+  letter-spacing: 0.5px;
+}
+#pdf-layer .p-hdr-sub {
+  font-size: 9px;
+  color: #555;
+  margin-top: 2px;
+}
+#pdf-layer .p-hdr-addr {
+  font-size: 8.5px;
+  color: #666;
+  margin-top: 1px;
+}
+
+/* PDF Main table */
+#pdf-layer .p-main {
+  border: 2px solid #1a3a6e;
+  border-top: none;
+}
+#pdf-layer .p-main-no-hdr {
+  border: 2px solid #1a3a6e;
+}
+
+/* Cell types */
+#pdf-layer .p-lbl {
+  background: #f0f5ff;
+  font-weight: 700;
+  color: #1a3a6e;
+  width: 44%;
+  font-size: 8.5px;
+  line-height: 1.4;
+}
+#pdf-layer .p-val {
+  color: #1e293b;
+  width: 56%;
+  font-size: 9px;
+}
+#pdf-layer .p-meta-lbl {
+  font-weight: 700;
+  color: #1a3a6e;
+  width: 50%;
+  font-size: 9px;
+}
+#pdf-layer .p-meta-val {
+  color: #1e293b;
+  width: 50%;
+  font-size: 9px;
+}
+#pdf-layer .p-shd {
+  background: #1a3a6e !important;
+  color: #ffffff !important;
+  font-weight: 700;
+  font-size: 8.5px;
+  text-align: center;
+}
+#pdf-layer .p-hhd {
+  background: #eef2ff;
+  font-weight: 700;
+  color: #1a3a6e;
+  font-size: 8.5px;
+  text-align: center;
+}
+#pdf-layer .p-gr {
+  width: 12.5%;
+  height: 16px;
+  font-size: 9px;
+  text-align: center;
+}
+#pdf-layer .p-nr {
+  font-size: 9px;
+  font-weight: 600;
+  color: #1a3a6e;
+}
+
+/* Other predictions block */
+#pdf-layer .p-bot {
+  border: 2px solid #1a3a6e;
+  border-top: none;
+  padding: 5px 7px;
+  min-height: 50px;
+}
+#pdf-layer .p-bot-title {
+  font-weight: 700;
+  color: #1a3a6e;
+  font-size: 9px;
+  margin-bottom: 3px;
+}
+#pdf-layer .p-bot-val {
+  font-size: 9px;
+  color: #1e293b;
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+/* PDF Footer block */
+#pdf-layer .p-ftr {
+  border: 2px solid #1a3a6e;
+  border-top: none;
+  text-align: center;
+  padding: 4px 5px;
+  font-size: 8px;
+  color: #555;
+}
+
+/* ═══════════════════════════════════════════
+   PRINT — show only the PDF layer
+═══════════════════════════════════════════ */
+@media print {
+  body {
+    background: #ffffff !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  #pdf-layer {
+    position: static !important;
+    left: auto !important;
+    top: auto !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    width: 100% !important;
+    min-height: unset !important;
+    padding: 8mm !important;
+    z-index: auto !important;
+  }
+}
+/* ═══════════════════════════════════════════
+   FORCE COLORS IN PDF (CRITICAL FIX)
+═══════════════════════════════════════════ */
+#pdf-layer,
+#pdf-layer * {
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+  color-adjust: exact !important;
+}
+
+/* Fix faded / grayscale issue */
+#pdf-layer {
+  background: #ffffff !important;
+}
+
+/* Ensure colored backgrounds stay visible */
+#pdf-layer .p-lbl,
+#pdf-layer .p-hhd {
+  background: #eef2ff !important;
+}
+
+#pdf-layer .p-shd {
+  background: #1a3a6e !important;
+  color: #ffffff !important;
+}
