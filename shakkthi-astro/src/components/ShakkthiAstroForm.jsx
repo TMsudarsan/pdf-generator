@@ -561,31 +561,39 @@ const nm = (form.name.trim() || 'Jathagam').replace(/\s+/g, '_');
 
       <td style={S.val}>
         {fid === 'dob' ? (
-          <div style={{ display: 'flex', gap: '6px' }}>
-            {/* DATE */}
-            <input
-              type="date"
-              value={form.dobDate || ''}
-              onChange={(e) => set('dobDate', e.target.value)}
-              style={{
-                flex: 1,
-                fontSize: '12px',
-                padding: '4px'
-              }}
-            />
+         <div className="flex flex-col sm:flex-row gap-2">
 
-            {/* TIME */}
-            <input
-              type="time"
-              value={form.dobTime || ''}
-              onChange={(e) => set('dobTime', e.target.value)}
-              style={{
-                flex: 1,
-                fontSize: '12px',
-                padding: '4px'
-              }}
-            />
-          </div>
+  {/* DATE FIELD */}
+  <div className="relative w-full">
+    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
+      📅
+    </span>
+    <input
+      type="date"
+      value={form.dobDate || ''}
+      onChange={(e) => set('dobDate', e.target.value)}
+      className="w-full pl-9 pr-2 py-2 text-sm rounded-lg border border-slate-300 
+                 focus:outline-none focus:ring-2 focus:ring-blue-500 
+                 focus:border-blue-500 transition-all"
+    />
+  </div>
+
+  {/* TIME FIELD */}
+  <div className="relative w-full">
+    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">
+      ⏰
+    </span>
+    <input
+      type="time"
+      value={form.dobTime || ''}
+      onChange={(e) => set('dobTime', e.target.value)}
+      className="w-full pl-9 pr-2 py-2 text-sm rounded-lg border border-slate-300 
+                 focus:outline-none focus:ring-2 focus:ring-blue-500 
+                 focus:border-blue-500 transition-all"
+    />
+  </div>
+
+</div>
         ) : (
           <FInput fid={fid} val={form[fid]} onChange={set} />
         )}
